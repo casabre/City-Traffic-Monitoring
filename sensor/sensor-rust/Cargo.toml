@@ -16,3 +16,7 @@ serde = "*"
 serde_derive = "*"
 serde_cbor = "*"
 erased-serde = "*"
+serde_json = "*"
+base64 = "*"
+flate2 = "*"
+ndarray = { version = "*",  features = ["serde"]}

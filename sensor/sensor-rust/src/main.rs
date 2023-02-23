@@ -1,48 +1,37 @@
-use std::collections::HashMap;
-use std::env;
+#![crate_name = "sensor_rust"]
 
 mod audio;
 mod publishing;
 mod runner;
 use crate::audio::Capturing;
+use crate::publishing::Authentication;
 use crate::publishing::Publishing;
 use crate::runner::MutableRunner;
 use crate::runner::Runner;
 use audio::Audio;
 use log::info;
 use publishing::MqttPublisher;
+mod utility;
 
 fn main() {
     info!("Starting capturing and forwarding");
-    let id = get_id();
-    let url = get_url();
-    let topics = get_topics();
-    let sample_rate = get_sample_rate();
-    let mqtt = MqttPublisher::new(url, id, topics);
+    let id = utility::get_sensor_id();
+    let mqtt_url = utility::get_mqtt_url();
+    let topics = utility::get_topics();
+    let sample_rate = utility::get_sample_rate();
+    let mqtt_username = utility::get_mqtt_username();
+    let mqtt_password = utility::get_mqtt_password();
+    let mqtt = MqttPublisher::new(
+        mqtt_url,
+        id,
+        topics,
+        Authentication {
+            username: mqtt_username,
+            password: mqtt_password,
+        },
+    );
     let mut audio_sensor = Audio::new(|x| mqtt.append(x), sample_rate);
     audio_sensor.start();
     mqtt.start();
     // should not go here because MqttPublisher loop is blocking
-}
-
-fn get_id() -> String {
-    let id = env::var("SENSOR_ID").unwrap_or_else(|_| "sensor-data-abc".to_string());
-    id
-}
-
-fn get_url() -> String {
-    let url = env::var("MQTT_URL").unwrap_or_else(|_| "tcp://sctmp.ai:1883".to_string());
-    url
-}
-
-fn get_topics() -> HashMap<String, String> {
-    let mut topics = HashMap::new();
-    topics.insert("out".to_string(), "sensor-data".to_string());
-    topics
-}
-
-fn get_sample_rate() -> i32 {
-    let default = 2_i32.pow(14);
-    let sr = env::var("SAMPLE_RATE").unwrap_or_else(|_| format!("{default}").to_string());
-    sr.parse::<i32>().unwrap()
 }

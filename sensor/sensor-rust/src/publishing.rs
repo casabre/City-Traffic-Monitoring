@@ -1,7 +1,8 @@
 use crossbeam::queue::SegQueue;
 use erased_serde::Serialize;
 use log::{error, info};
-use serde_cbor::to_vec;
+// use serde_cbor::to_vec;
+use serde_json::to_vec;
 use std::collections::HashMap;
 use std::{thread, time};
 
@@ -9,10 +10,15 @@ use crate::runner::Runner;
 extern crate paho_mqtt as mqtt;
 
 pub trait Publishing<'a> {
-    fn new(url: String, id: String, topics: HashMap<String, String>) -> Self;
+    fn new(url: String, id: String, topics: HashMap<String, String>, auth: Authentication) -> Self;
     fn append(&self, value: Box<dyn Serialize>);
     fn fetch(&self) -> Option<Box<dyn Serialize>>;
     fn publish(&self, msg: Vec<u8>);
+}
+
+pub struct Authentication {
+    pub username: String,
+    pub password: String,
 }
 
 pub struct MqttPublisher {
@@ -39,12 +45,18 @@ impl<'a> Runner<'a> for MqttPublisher {
 }
 
 impl<'a> Publishing<'a> for MqttPublisher {
-    fn new(url: String, id: String, topics: HashMap<String, String>) -> MqttPublisher {
+    fn new(
+        url: String,
+        id: String,
+        topics: HashMap<String, String>,
+        auth: Authentication,
+    ) -> MqttPublisher {
         // Define the set of options for the create.
         // Use an ID for a persistent session.
         let create_opts = mqtt::CreateOptionsBuilder::new()
             .server_uri(&url)
             .client_id(&id)
+            .mqtt_version(0)
             .finalize();
 
         // Create a client.
@@ -57,11 +69,13 @@ impl<'a> Publishing<'a> for MqttPublisher {
         let conn_opts = mqtt::ConnectOptionsBuilder::new()
             .keep_alive_interval(std::time::Duration::from_secs(20))
             .clean_session(true)
+            .user_name(auth.username)
+            .password(auth.password)
             .finalize();
 
         // Connect and wait for it to complete or fail.
         if let Err(e) = client.connect(conn_opts) {
-            error!("Unable to connect:\n\t{:?}", e);
+            panic!("Unable to connect:\n\t{:?}", e);
         } else {
             info!("Successfully connected client to host {:?}", &url);
         }

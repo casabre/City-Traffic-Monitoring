@@ -107,7 +107,7 @@ fn convert_audio_raw_struct_to_base64_string(ar: AudioRaw) -> String {
         println!("Error reading from stream: {}", e);
     };
     let compressed_bytes = zip_engine.finish().unwrap();
-    let base64_encoded = general_purpose::URL_SAFE_NO_PAD.encode(&compressed_bytes);
+    let base64_encoded = general_purpose::STANDARD.encode(&compressed_bytes);
     base64_encoded
 }
 

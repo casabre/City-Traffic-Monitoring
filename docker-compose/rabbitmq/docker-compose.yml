@@ -6,7 +6,7 @@ services:
     container_name: rabbitmq
     restart: unless-stopped
     ports:
-      - 1883:1883
+      - 11883:1883
       - 5672:5672
       - 15672:15672
       - 1885:15675

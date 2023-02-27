@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  rabbitmq:
+    image: nats:alpine
+    container_name: nats
+    restart: unless-stopped
+    ports:
+      - 11883:1883
+      - 4222:4222
+      - 6222:6222
+      - 18222:8222
+    volumes:
+      - type: bind
+        source: ./config/nats-server.conf
+        target: /etc/nats/nats-server.conf
+        read_only: true
+    networks:
+      - brokernet
+
+networks:
+  brokernet:
+    driver: bridge

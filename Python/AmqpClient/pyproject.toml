@@ -1,0 +1,53 @@
+[project]
+name = "broker.amqp"
+authors = [
+    {name = "Carsten Sauerbrey", email = "carsten.sauerbrey@gmail.com"},
+]
+description = "AMQP client implementation"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["message broker", "amqp"]
+license = {text = "MIT"}
+classifiers = [
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "aio_pika",
+    "broker.service_interface",
+    "importlib-metadata; python_version<'3.8'",
+]
+version = "0.1.0"
+
+[project.optional-dependencies]
+docs = ["sphinx", "sphinx-rtd-theme", "myst-parser"]
+test = ["pytest", "coverage[toml]", "pytest-cov", "pytest-asyncio"]
+
+[build-system]
+requires = ["setuptools>=45.2", "wheel", "setuptools_scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.coverage.run]
+source = ["broker"]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.setuptools_scm]
+fallback_version = "0.0.0"
+
+[tool.mypy]
+ignore_missing_imports = true

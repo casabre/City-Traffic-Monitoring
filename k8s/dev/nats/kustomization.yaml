@@ -1,0 +1,9 @@
+namespace: sctmp-dev
+
+helmCharts:
+  - name: nats
+    repo: https://charts.bitnami.com/bitnami
+    releaseName: nats-broker
+    version: 7.5.10
+    valuesInline:
+    	

@@ -13,7 +13,7 @@
 			},
 			"label": "rust: sensor cargo build",
 			"options": {
-				"cwd": "${workspaceFolder}/sensor/sensor-rust"
+				"cwd": "${workspaceFolder}"
 			}
 		}
 	]

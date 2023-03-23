@@ -7,7 +7,6 @@ from threading import Thread
 
 import numpy as np
 
-import plotly.subplots
 from broker.consumer import consume, run
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output

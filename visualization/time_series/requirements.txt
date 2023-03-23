@@ -1,0 +1,9 @@
+-e ../../Python/BrokerServiceInterface
+-e ../../Python/NatsClient
+-e ../../Python/AmqpClient
+-e ../../Python/BrokerConsumer
+nats-py
+numpy
+dash
+pandas
+pathos

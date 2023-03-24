@@ -1,4 +1,4 @@
-#![crate_name = "sensor_rust"]
+#![crate_name = "sensor_mqtt"]
 
 mod audio;
 mod publishing;

@@ -1,13 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-resources:
-  - ../../../base/dev
-
 helmCharts:
   - name: rabbitmq
     repo: https://charts.bitnami.com/bitnami
-    releaseName: mqtt-broker
+    releaseName: amqp-broker
     version: 11.12.0
     namespace: sctmp-dev
     valuesInline:
@@ -29,13 +26,5 @@ helmCharts:
       ingress:
         enabled: true
         hostname: "broker.sctmp.ai"
-      #   extraPaths:
-      #     - path: /rabbitmq
-      #       pathType: Prefix
-      #       backend:
-      #         service:
-      #           name: mqtt-broker-rabbitmq
-      #           port:
-      #             name: http-stats
       persistence:
         enabled: false

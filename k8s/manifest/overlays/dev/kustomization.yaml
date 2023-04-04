@@ -1,0 +1,4 @@
+resources:
+  - ../../base/dev
+  - rabbitmq
+  - emqx

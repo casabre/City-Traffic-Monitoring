@@ -1,0 +1,6 @@
+execution:
+  config:
+    # broker: "amqp://guest:guest@sctmp.ai" # Optional[str]: The URL of the Celery broker
+    # backend: "amqp://guest:guest@sctmp.ai" # Optional[str]: The URL of the Celery results backend
+    # config_source:
+    # name: "audio-etl"

@@ -8,7 +8,7 @@ helmCharts:
     version: 5.0.21
     namespace: sctmp-dev
     valuesInline:
-      replicaCount: 1
+      replicaCount: 1  # depending on the number of nodes in your cluster
       service:
         type: LoadBalancer
       ingress:

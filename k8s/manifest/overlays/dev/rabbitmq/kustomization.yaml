@@ -8,7 +8,7 @@ helmCharts:
     version: 11.12.0
     namespace: sctmp-dev
     valuesInline:
-      replicaCount: 1
+      replicaCount: 1  # depending on the number of nodes in your cluster
       extraContainerPorts:
         - containerPort: 1883
           name: mqtt

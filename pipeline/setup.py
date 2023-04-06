@@ -12,6 +12,7 @@ setup(
         "scipy",
         "cbor2",
         "waveform_analysis",
+        "paho-mqtt",
     ],
     extras_require={"dev": ["dagit", "pytest"]},
     include_package_data=True,

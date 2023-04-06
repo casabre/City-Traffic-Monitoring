@@ -2,6 +2,7 @@ import json as pickle
 from contextlib import contextmanager
 from dagster import DefaultSensorStatus, RunRequest, sensor, resource
 from ..jobs.extract_audio import extract_audio
+import paho.mqtt.subscribe as subscribe
 
 
 class BrokerConnection:
@@ -34,15 +35,11 @@ def broker_resource(init_context):
     default_status=DefaultSensorStatus.RUNNING,
 )
 def listen_rabbitmq():
-    import uuid
-    import time
-
-    # todo: use real data from broker here
-    data = {"n": f"sensor_audio_{uuid.uuid4()}", "vd": "", "t": time.time()}
-    # data = pickle.loads(body)
+    msg = subscribe.simple("sensor/data", hostname="mqtt.sctmp.ai", keepalive=2)
+    data = pickle.loads(msg.payload)
     if "audio" not in data.get("n"):
         return
     yield RunRequest(
-        run_key=data.get("n"),
+        run_key=data.get("t"),
         run_config={"ops": {"extract_senml": {"config": {"data": data}}}},
     )

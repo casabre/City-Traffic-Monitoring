@@ -9,13 +9,13 @@ from dagster import Out, op
 
 
 @op(config_schema={"data": dict}, out={"signal": Out(), "fs": Out()})
-def extract_senml(context) -> typing.Tuple[np.ndarray, float]:
+def extract_senml(context) -> typing.Tuple[np.ndarray, int]:
     """Extract signal and sampling rate from SenML data."""
     data = context.op_config["data"]
     return extract_raw_stream(data)
 
 
-def extract_raw_stream(data: dict) -> typing.Tuple[np.ndarray, float]:
+def extract_raw_stream(data: dict) -> typing.Tuple[np.ndarray, int]:
     """Decode and extract signal and sampling rate."""
     decoded = base64.b64decode(data["vd"])
     serde = zlib.decompress(decoded)

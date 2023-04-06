@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: rabbitmq
+    repo: https://charts.bitnami.com/bitnami
+    releaseName: amqp-broker
+    version: 11.12.0
+    namespace: sctmp-dev
+    valuesInline:
+      replicaCount: 1  # depending on the number of nodes in your cluster
+      extraContainerPorts:
+        - containerPort: 1883
+          name: mqtt
+      service:
+        type: LoadBalancer
+        extraPorts:
+          - name: mqtt
+            nodePort: null
+            port: 1883
+            targetPort: mqtt
+      auth:
+        username: "guest"
+        password: "guest"
+      extraPlugins: "rabbitmq_auth_backend_ldap,rabbitmq_mqtt,rabbitmq_web_mqtt,rabbitmq_amqp1_0"
+      ingress:
+        enabled: true
+        hostname: "broker.sctmp.ai"
+      persistence:
+        enabled: false

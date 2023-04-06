@@ -10,7 +10,7 @@ pub fn get_sensor_id() -> String {
 }
 
 pub fn get_mqtt_url() -> String {
-    let url = env::var("MQTT_URL").unwrap_or_else(|_| "tcp://sctmp.ai:1883".to_string());
+    let url = env::var("MQTT_URL").unwrap_or_else(|_| "tcp://mqtt.sctmp.ai:1883".to_string());
     url
 }
 

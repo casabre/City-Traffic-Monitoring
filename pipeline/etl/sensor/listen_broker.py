@@ -35,7 +35,12 @@ def broker_resource(init_context):
     default_status=DefaultSensorStatus.RUNNING,
 )
 def listen_rabbitmq():
-    msg = subscribe.simple("sensor/data", hostname="mqtt.sctmp.ai", keepalive=2)
+    try:
+        msg = subscribe.simple("sensor/data", hostname="mqtt.sctmp.ai", keepalive=1)
+    except TimeoutError:
+        return
+    if msg is None:
+        return
     data = pickle.loads(msg.payload)
     if "audio" not in data.get("n"):
         return

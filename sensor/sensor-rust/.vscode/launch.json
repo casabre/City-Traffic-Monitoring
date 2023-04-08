@@ -8,12 +8,17 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch rust-sensor",
+            "cargo": {
+                "args": [
+                    "build"
+                ]
+            },
             "program": "${workspaceFolder}/target/debug/sensor-mqtt",
             "args": [],
             "cwd": "${workspaceFolder}",
             "env": {
                 "INPUT_DEVICE": "ac108",
-                "MQTT_URL": "tcp://mqtt.sctmp.ai:11883",
+                "MQTT_URL": "tcp://mqtt.sctmp.ai:1883",
                 "MQTT_USERNAME": "",
                 "MQTT_PASSWORD": "",
                 "SENSOR_ID": "a16080fd-f4fd-492a-ad88-6c8100ce7dab",

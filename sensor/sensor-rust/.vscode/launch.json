@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch rust-sensor",
+            "cargo": {
+                "args": [
+                    "build"
+                ]
+            },
+            "program": "${workspaceFolder}/target/debug/sensor-mqtt",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "INPUT_DEVICE": "ac108",
+                "MQTT_URL": "tcp://mqtt.sctmp.ai:1883",
+                "MQTT_USERNAME": "",
+                "MQTT_PASSWORD": "",
+                "SENSOR_ID": "a16080fd-f4fd-492a-ad88-6c8100ce7dab",
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "custom",
+            "name": "Remote executable 'sensor'",
+            "preLaunchTask": "rust: remote ARM debug setup",
+            "targetCreateCommands": [
+                "target create ${workspaceFolder}/target/aarch64-unknown-linux-gnu/debug/myapp"
+            ],
+            "processCreateCommands": [
+                "gdb-remote targetboard.local:17777"
+            ]
+        }
+    ]
+}

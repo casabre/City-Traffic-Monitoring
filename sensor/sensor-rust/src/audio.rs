@@ -146,10 +146,12 @@ fn copy_data_and_create_audio_raw_struct(
 fn create_ctx<'a>() -> Result<soundio::Context<'a>, soundio::Error> {
     let mut ctx = soundio::Context::new();
     ctx.set_app_name("Recorder");
-    match ctx.connect() {
-        Err(e) => panic!("Error connecting soundio context: {}", e),
-        Ok(f) => f,
-    };
+    ctx.connect_backend(soundio::Backend::PulseAudio)
+        .expect("Couldn't connect to backend");
+    // match ctx.connect() {
+    //     Err(e) => panic!("Error connecting soundio context: {}", e),
+    //     Ok(f) => f,
+    // };
     ctx.flush_events();
     Ok(ctx)
 }
@@ -161,16 +163,16 @@ fn create_dev<'a>(
 ) -> Result<soundio::Device<'a>, soundio::Error> {
     let device_name = env::var("INPUT_DEVICE").unwrap_or("".to_string());
     let mut dev: Option<soundio::Device> = None;
-    if !device_name.is_empty() {
-        let devices = ctx.input_devices().unwrap();
-        for device in devices {
-            let name = device.name().to_lowercase();
-            dev = match name {
-                device_name => Some(device),
-                _ => None,
-            };
-        }
-    }
+    // if !device_name.is_empty() {
+    //     let devices = ctx.input_devices().unwrap();
+    //     for device in devices {
+    //         let name = device.name().to_lowercase();
+    //         dev = match name {
+    //             device_name => Some(device),
+    //             _ => None,
+    //         };
+    //     }
+    // }
     if let None = dev {
         dev = Some(ctx.default_input_device().expect("No input device"));
         println!("Using default input device")

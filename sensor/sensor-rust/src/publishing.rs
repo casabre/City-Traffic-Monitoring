@@ -81,8 +81,8 @@ impl<'a> Publishing<'a> for MqttPublisher {
         }
 
         MqttPublisher {
-            topics: topics,
-            client: client,
+            topics,
+            client,
             buffer: SegQueue::new(),
             qos: 1,
         }

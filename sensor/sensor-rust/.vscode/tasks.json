@@ -1,0 +1,80 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cargo",
+			"command": "build",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"label": "rust: sensor cargo build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "rust: cargo build ARM64",
+			"type": "cargo",
+			"command": "build",
+			"args": [
+				"--target=aarch64-unknown-linux-gnu"
+			],
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": {
+				"kind": "build"
+			},
+		},
+		{
+			"label": "ssh: kill GDB Server",
+			"type": "shell",
+			"command": "ssh",
+			"args": [
+				"${TARGET_USER}@${SSH_REMOTE}",
+				"killall gdbserver sensor-mqtt"
+			],
+			"group": {
+				"kind": "none"
+			},
+			"dependsOn": [
+				"rust: cargo build ARM64",
+			],
+		},
+		{
+			"label": "scp: copy binary",
+			"type": "shell",
+			"command": "scp",
+			"args": [
+				"${workspaceFolder}/target/aarch64-unknown-linux-gnu/debug/sensor-mqtt",
+				"${TARGET_USER}@${SSH_REMOTE}:/home/${TARGET_USER}/sensor-mqtt"
+			],
+			"group": {
+				"kind": "none"
+			},
+			"dependsOn": [
+				"ssh: kill GDB Server",
+			],
+		},
+		{
+			"label": "ssh: start GDB Server",
+			"type": "shell",
+			"command": "ssh",
+			"args": [
+				"-f",
+				"${TARGET_USER}@${SSH_REMOTE}",
+				"sh -c 'cd var/lib/sensor-mqtt; nohup gdbserver *:${GDBPORT} /home/${TARGET_USER}/sensor-mqtt > /dev/null 2>&1 &'"
+			],
+			"group": {
+				"kind": "none"
+			},
+			"dependsOn": [
+				"scp: copy binary",
+			],
+		},
+	]
+}

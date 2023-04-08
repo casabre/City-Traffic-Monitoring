@@ -41,7 +41,7 @@ def test_data(q: Queue):
 def create_broker(q: Queue):
     @consume(
         topic="sensor.data",
-        url="amqp://sctmp.ai:5672",
+        url="amqp://broker.sctmp.ai:5672",
         auth={"user": "guest", "password": "guest"},
         exchange="amq.topic",
     )

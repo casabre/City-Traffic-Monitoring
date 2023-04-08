@@ -27,7 +27,6 @@ HANDLES = {}
 
 
 def consume(url: str, topic: str = "sensor.data", **options):
-    @functools.wraps
     def wrapper(func):
         client = HANDLES.get("client")
         if not client:
@@ -41,6 +40,7 @@ def consume(url: str, topic: str = "sensor.data", **options):
                 return
             await func(*extracted)
 
+        @functools.wraps(func)
         def inner_wrapper(*args, **kwargs):
             raise RuntimeError(
                 f"Function {func.__name__} already consumed. "

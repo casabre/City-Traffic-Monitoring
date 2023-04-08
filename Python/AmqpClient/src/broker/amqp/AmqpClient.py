@@ -8,9 +8,15 @@ from broker.service_interface import ServiceInterface
 
 
 class AmqpClient(ServiceInterface):
-    def __init__(self, url, exchange, auth: typing.Optional[dict] = None, logger=None):
+    def __init__(
+        self,
+        url,
+        auth: typing.Optional[dict] = None,
+        logger: typing.Optional[logging.Logger] = None,
+        **kwargs,
+    ):
         super().__init__(url, auth, logger)
-        self.exchange_name = exchange
+        self.exchange_name = kwargs.pop("exchange", "")
         self.connection: typing.Optional[aio_pika.Connection] = None
         self.channel: typing.Optional[aio_pika.Channel] = None
 

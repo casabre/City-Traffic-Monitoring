@@ -7,7 +7,7 @@ from broker.service_interface import ServiceInterface
 
 
 class NatsClient(ServiceInterface):
-    def __init__(self, url, auth: typing.Optional[dict] = None, logger=None):
+    def __init__(self, url, auth: typing.Optional[dict] = None, logger=None, **kwargs):
         super().__init__(url, auth, logger)
         self.connection: typing.Optional[nats.Client] = None
         self.subscription: dict = {}

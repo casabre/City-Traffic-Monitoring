@@ -9,9 +9,9 @@ except PackageNotFoundError:
 import typing
 
 try:
-    from broker.nats import NatsClient as Client
-except ImportError:
     from broker.amqp import AmqpClient as Client
+except ImportError:
+    from broker.nats import NatsClient as Client
 
 import asyncio
 import base64
@@ -38,9 +38,9 @@ def consume(url: str, topic: str = "sensor.data", **options):
             extracted = await extract_content(data)
             if not extracted:
                 return
-            stream, sampling_rate = extracted
-            await func(stream, sampling_rate)
+            await func(*extracted)
 
+        @functools.wraps(func)
         def inner_wrapper(*args, **kwargs):
             raise RuntimeError(
                 f"Function {func.__name__} already consumed. "
@@ -58,7 +58,7 @@ async def extract_content(
     data = await to_async(pickle.loads, body)
     if "audio" not in data.get("n"):
         return None
-    return await extract_raw_stream(data)
+    return await extract_raw_stream(data) + (data["t"],)
 
 
 async def extract_raw_stream(data: dict) -> typing.Tuple[np.ndarray, float]:

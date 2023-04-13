@@ -21,5 +21,5 @@ def a_weighting(context, signal: np.ndarray, fs: int) -> float:
     weighted_signal = A_weight(signal, fs)
     rms_value = np.sqrt(np.mean(np.abs(weighted_signal) ** 2))
     result = 20 * np.log10(rms_value)
-    context.log.info(f"A-weighting: {result} dBFS")
+    context.log.debug(f"A-weighting: {result} dBFS")
     return result

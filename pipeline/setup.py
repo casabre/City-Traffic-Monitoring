@@ -11,7 +11,7 @@ setup(
         "numpy",
         "scipy",
         "cbor2",
-        "waveform_analysis",
+        "kombu",
         "paho-mqtt",
     ],
     extras_require={"dev": ["dagit", "pytest"]},

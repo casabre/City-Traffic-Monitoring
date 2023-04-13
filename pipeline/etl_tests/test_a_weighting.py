@@ -4,7 +4,7 @@ from etl.ops.a_weigthing import a_weighting
 
 
 def test_rms_a_weighting_db():
-    context = build_op_context(resources={"foo": "bar"})
+    context = build_op_context()
     # Generate a test signal (2 seconds of white noise at 44100 Hz)
     fs = 44100
     duration = 2

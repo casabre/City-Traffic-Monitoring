@@ -1,29 +1,32 @@
+from dagster import build_op_context
 import numpy as np
 from typing import Tuple
 from etl.ops.angle_of_arrival import angle_of_arrival
 
 
 def test_angle_of_arrival():
-    # Generate a test audio signal and compute the expected angle of arrival
-    n_mics = 8
-    n_samples = 1024
-    sample_rate = 48000
-    spacing = 0.05
-    angle = 30
-    delay = spacing * np.sin(angle * np.pi / 180) / 343
-    t = np.arange(n_samples) / sample_rate
-    audio_array = np.zeros((n_mics, n_samples))
-    for i in range(n_mics):
-        audio_array[i, :] = np.sin(
-            2 * np.pi * (i * spacing * np.sin(angle * np.pi / 180) / 343 + delay) * t
+    # For a detailed explanation see https://pysdr.org/content/doa.html
+    context = build_op_context()
+    sample_rate = 1e6
+    number_of_samples = 10000
+    time = np.arange(number_of_samples) / sample_rate
+    signal_frequency = 0.02e6
+    received_signal = np.asmatrix(np.exp(2j * np.pi * signal_frequency * time))
+    mic_spacing = 0.5
+    number_of_antennas = 3
+    aoa_theta_in_degrees = 20
+    aoa_theta_in_radian = aoa_theta_in_degrees / 180 * np.pi
+    array_factor = np.asmatrix(
+        np.exp(
+            -2j
+            * np.pi
+            * mic_spacing
+            * np.arange(number_of_antennas)
+            * np.sin(aoa_theta_in_radian)
         )
-    expected_angle = angle
+    )
+    audio_signal = array_factor.T @ received_signal
+    actual_angle = angle_of_arrival(context, audio_signal, mic_spacing, 1)
 
-    # Compute the actual angle of arrival using the angle_of_arrival function
-    actual_angle, actual_delay = angle_of_arrival(audio_array, sample_rate, spacing)
-
-    # Check that the actual angle of arrival is close to the expected angle of arrival
-    assert np.isclose(actual_angle, expected_angle, rtol=1e-2)
-
-    # Check that the actual delay is close to the expected delay
-    assert np.isclose(actual_delay, delay, rtol=1e-6)
+    # Test equality within certain tolerance
+    assert np.isclose(aoa_theta_in_degrees, actual_angle, rtol=0.01)
